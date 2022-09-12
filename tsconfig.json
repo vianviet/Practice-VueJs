@@ -36,5 +36,11 @@
   ],
   "exclude": [
     "node_modules"
-  ]
+  ],
+  "types": [
+  "@nuxt/types",
+  "@types/node",
+  "@nuxtjs/auth-next",
+  "vuetify"
+]
 }
