@@ -11,7 +11,7 @@
       <router-link :to="{ name: 'home' }"
         ><img src="https://technext.github.io/elaadmin/images/logo.png"
       /></router-link>
-      <v-icon>mdi-menu</v-icon>
+      <v-icon @click="changeSidebar">mdi-menu</v-icon>
     </v-col>
     <v-col
       lg="9"
@@ -31,10 +31,10 @@
           src="https://technext.github.io/elaadmin/images/admin.jpg"
         />
       </v-badge>
-      <v-badge content="4" color="#007BFF" bordered overlap>
+      <v-badge :content="message" color="#007BFF" bordered overlap>
         <v-icon color="rgb(153,171,180)">mdi-email</v-icon>
       </v-badge>
-      <v-badge content="3" color="#DC3545" bordered overlap>
+      <v-badge :content="notification" color="#DC3545" bordered overlap>
         <v-icon color="rgb(153,171,180)">mdi-bell</v-icon>
       </v-badge>
       <v-icon color="rgb(153,171,180)">mdi-magnify</v-icon>
@@ -47,11 +47,31 @@ export default {
   name: "HeaderPage",
   data() {
     return {
-      breakpoint: "",
+      notification: 1,
+      message: 1,
     };
   },
-  updated() {
-    console.log(this.$vuetify.breakpoint.name);
+  methods: {
+    changeSidebar() {
+      this.$emit("eventChangeSidebar");
+    },
+  },
+  created() {
+    setTimeout(() => {
+      this.notification++;
+      setTimeout(() => {
+        this.notification++;
+      }, 500);
+    }, 500);
+    setTimeout(() => {
+      this.message++;
+      setTimeout(() => {
+        this.message++;
+        setTimeout(() => {
+          this.message++;
+        }, 500);
+      }, 500);
+    }, 300);
   },
 };
 </script>
@@ -68,11 +88,10 @@ export default {
     padding-right: 20px !important;
   }
   &__left {
-    // max-width: 200px;
     display: flex;
     justify-content: space-between;
     padding-left: 20px !important;
-    // gap: 200px;
+    gap: 10px;
   }
   &__right {
     display: flex;
