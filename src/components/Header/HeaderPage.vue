@@ -20,6 +20,7 @@
       sm="8"
       md="8"
       class="header__right header__row"
+      :class="$vuetify.breakpoint.name === 'xs' && 'd-none'"
     >
       <v-badge color="#49A342" bordered bottom dot overlap>
         <img
@@ -54,6 +55,7 @@ export default {
   methods: {
     changeSidebar() {
       this.$emit("eventChangeSidebar");
+      // this.$emit("eventChangeDrawer");
     },
   },
   created() {
@@ -78,8 +80,13 @@ export default {
 
 <style lang="scss">
 .header {
+  z-index: 1;
+  position: fixed;
+  width: 100vw;
   display: flex;
   justify-content: space-between;
+  bottom: 30;
+  background-color: white;
   &__row {
     border-bottom: 1px solid silver;
     height: 56px;
