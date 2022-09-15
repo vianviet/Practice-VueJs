@@ -49,6 +49,7 @@
                       :key="subItem.title"
                       link
                       class="subnav-item justify-start"
+                      :to="`${item.path}${subItem.path}`"
                     >
                       <v-list-item-icon>
                         <v-icon v-text="`mdi-${subItem.icon}`"></v-icon>
@@ -59,7 +60,10 @@
                     </v-list-item>
                   </v-list-group>
                 </template>
-                <v-list v-if="item.subNav.length === 0 ? false : true">
+                <v-list
+                  v-if="item.subNav.length === 0 ? false : true"
+                  class="content-menu"
+                >
                   <v-list-item
                     v-for="(subItem, index) in item.subNav"
                     :key="index"
@@ -95,6 +99,7 @@ export default {
             {
               title: "Components",
               icon: "mdi-cogs",
+              path: "/component",
               subNav: [
                 {
                   title: "Button",
@@ -116,6 +121,7 @@ export default {
             {
               title: "Table",
               icon: "mdi-table-large",
+              path: "/table",
               subNav: [
                 {
                   title: "Basic Table",
@@ -132,6 +138,7 @@ export default {
             {
               title: "Form",
               icon: "mdi-form-select",
+              path: "/form",
               subNav: [
                 {
                   title: "Basic Table",
@@ -263,5 +270,15 @@ export default {
 }
 .v-list-item {
   padding: 0 0px;
+}
+
+.v-menu__content {
+  left: 56px !important;
+  .v-list {
+    padding: 0 !important;
+  }
+  .v-list-item {
+    padding: 0px 10px;
+  }
 }
 </style>

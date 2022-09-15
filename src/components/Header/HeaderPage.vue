@@ -2,12 +2,14 @@
   <v-row no-gutters>
     <div class="header">
       <v-col
-        lg="3"
+        lg="4"
         cols="12"
         xs="12"
         sm="4"
         md="4"
+        xl="4"
         class="header__left header__row"
+        :class="$vuetify.breakpoint.name === 'xs' && 'justify-space-between'"
       >
         <router-link :to="{ name: 'home' }"
           ><img src="https://technext.github.io/elaadmin/images/logo.png"
@@ -15,7 +17,8 @@
         <v-icon @click="changeSidebar">mdi-menu</v-icon>
       </v-col>
       <v-col
-        lg="9"
+        xl="8"
+        lg="8"
         cols="12"
         xs="12"
         sm="8"
@@ -44,6 +47,7 @@
     </div>
     <v-col
       v-show="$vuetify.breakpoint.name === 'xs'"
+      xl="10"
       lg="9"
       cols="12"
       xs="12"
@@ -126,9 +130,8 @@ export default {
   }
   &__left {
     display: flex;
-    justify-content: space-between;
     padding-left: 20px !important;
-    gap: 10px;
+    gap: 90px;
   }
   &__right {
     display: flex;
