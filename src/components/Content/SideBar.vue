@@ -1,74 +1,90 @@
 <template>
-  <div class="d-flex sidebar-main" :class="!isMobile && 'position-fixed'">
+  <v-card class="d-flex sidebar-main" :class="!isMobile && 'position-fixed'">
     <v-navigation-drawer
-      :value="drawer"
-      :mini-variant="miniSidebar"
+      v-model="propModel"
+      :mini-variant="miniSidebar && !isMobile"
       :permanent="!isMobile"
       :absolute="isMobile"
       :temporary="isMobile"
+      :app="isMobile"
+      :width="isMobile ? '100%' : 256"
     >
-      <div class="mx-4">
-        <v-list-item link>
-          <v-list-item-icon>
-            <v-icon>mdi-laptop</v-icon>
-          </v-list-item-icon>
-          <v-list-item-title>Dashboard</v-list-item-title>
-        </v-list-item>
-        <div v-for="(each, index) in items" :key="index">
-          <v-list-item-content :class="miniSidebar && 'd-none'">
-            <h4 class="px-4">{{ each.name }}</h4>
-          </v-list-item-content>
-          <v-list dense>
+      <v-list dense>
+        <div class="mx-4">
+          <v-list-item link>
+            <v-list-item-icon>
+              <v-icon>mdi-laptop</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>Dashboard</v-list-item-title>
+          </v-list-item>
+          <div v-for="each in items" :key="each.type">
+            <v-list-item-content :class="miniSidebar && 'd-none'">
+              <h4 class="px-4">{{ each.name }}</h4>
+            </v-list-item-content>
             <v-list-item
               class="my-3"
               v-for="item in each.data"
               :key="item.title"
               link
             >
-              <v-list-group
-                no-action
-                class="min-width-250"
-                append-icon="mdi-chevron-right"
-              >
-                <template v-slot:activator>
-                  <v-list-item-icon>
-                    <v-icon>{{ item.icon }}</v-icon>
-                  </v-list-item-icon>
-                  <v-list-item-content>
-                    <v-list-item-title>{{ item.title }}</v-list-item-title>
-                  </v-list-item-content>
+              <v-menu offset-x>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-list-group
+                    v-bind="attrs"
+                    v-on="miniSidebar && !isMobile ? on : ''"
+                    no-action
+                    class="w-100"
+                    append-icon="mdi-chevron-right"
+                  >
+                    <template v-slot:activator>
+                      <v-list-item-icon>
+                        <v-icon>{{ item.icon }}</v-icon>
+                      </v-list-item-icon>
+                      <v-list-item-content>
+                        <v-list-item-title>{{ item.title }}</v-list-item-title>
+                      </v-list-item-content>
+                    </template>
+                    <v-list-item
+                      v-for="subItem in item.subNav"
+                      :key="subItem.title"
+                      link
+                      class="subnav-item justify-start"
+                    >
+                      <v-list-item-icon>
+                        <v-icon v-text="`mdi-${subItem.icon}`"></v-icon>
+                      </v-list-item-icon>
+                      <v-list-item-title
+                        v-text="subItem.title"
+                      ></v-list-item-title>
+                    </v-list-item>
+                  </v-list-group>
                 </template>
-                <v-list-item
-                  v-for="subItem in item.subNav"
-                  :key="subItem.title"
-                  link
-                  class="subnav-item justify-start"
-                >
-                  <v-list-item-icon>
-                    <v-icon v-text="`mdi-${subItem.icon}`"></v-icon>
-                  </v-list-item-icon>
-                  <v-list-item-title v-text="subItem.title"></v-list-item-title>
-                </v-list-item>
-              </v-list-group>
+                <v-list v-if="item.subNav.length === 0 ? false : true">
+                  <v-list-item
+                    v-for="(subItem, index) in item.subNav"
+                    :key="index"
+                    link
+                  >
+                    <v-list-item-icon>
+                      <v-icon v-text="`mdi-${subItem.icon}`"></v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-title
+                      v-text="subItem.title"
+                    ></v-list-item-title>
+                  </v-list-item>
+                </v-list>
+              </v-menu>
             </v-list-item>
-          </v-list>
+          </div>
         </div>
-      </div>
+      </v-list>
     </v-navigation-drawer>
-  </div>
+  </v-card>
 </template>
 
 <script>
 export default {
   name: "side-bar",
-  // props: {
-  //   miniSidebar: Boolean,
-  //   isMobile: Boolean,
-  //   drawer: {
-  //     type: Boolean,
-  //     required: true,
-  //   },
-  // },
   props: ["miniSidebar", "isMobile", "drawer"],
   data() {
     return {
@@ -210,6 +226,14 @@ export default {
     isMini() {
       return this.miniSidebar;
     },
+    propModel: {
+      get() {
+        return this.drawer || !this.isMobile;
+      },
+      set(value) {
+        this.$emit("eventChangDrawer", value);
+      },
+    },
   },
 };
 </script>
@@ -231,11 +255,11 @@ export default {
     justify-content: flex-start !important;
   }
 }
+.w-100 {
+  width: 100%;
+}
 .position-fixed {
   position: fixed;
-}
-.min-width-250 {
-  min-width: 250px;
 }
 .v-list-item {
   padding: 0 0px;

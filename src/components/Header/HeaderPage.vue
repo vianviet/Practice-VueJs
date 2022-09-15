@@ -1,26 +1,55 @@
 <template>
-  <v-row no-gutters class="header">
+  <v-row no-gutters>
+    <div class="header">
+      <v-col
+        lg="3"
+        cols="12"
+        xs="12"
+        sm="4"
+        md="4"
+        class="header__left header__row"
+      >
+        <router-link :to="{ name: 'home' }"
+          ><img src="https://technext.github.io/elaadmin/images/logo.png"
+        /></router-link>
+        <v-icon @click="changeSidebar">mdi-menu</v-icon>
+      </v-col>
+      <v-col
+        lg="9"
+        cols="12"
+        xs="12"
+        sm="8"
+        md="8"
+        class="header__right header__row"
+        :class="$vuetify.breakpoint.name === 'xs' && 'd-none'"
+      >
+        <v-badge color="#49A342" bordered bottom dot overlap>
+          <img
+            :style="{
+              width: '40px!important',
+              height: '40px!important',
+              borderRadius: '50%',
+            }"
+            src="https://technext.github.io/elaadmin/images/admin.jpg"
+          />
+        </v-badge>
+        <v-badge :content="message" color="#007BFF" bordered overlap>
+          <v-icon color="rgb(153,171,180)">mdi-email</v-icon>
+        </v-badge>
+        <v-badge :content="notification" color="#DC3545" bordered overlap>
+          <v-icon color="rgb(153,171,180)">mdi-bell</v-icon>
+        </v-badge>
+        <v-icon color="rgb(153,171,180)">mdi-magnify</v-icon>
+      </v-col>
+    </div>
     <v-col
-      lg="3"
-      cols="12"
-      xs="12"
-      sm="4"
-      md="4"
-      class="header__left header__row"
-    >
-      <router-link :to="{ name: 'home' }"
-        ><img src="https://technext.github.io/elaadmin/images/logo.png"
-      /></router-link>
-      <v-icon @click="changeSidebar">mdi-menu</v-icon>
-    </v-col>
-    <v-col
+      v-show="$vuetify.breakpoint.name === 'xs'"
       lg="9"
       cols="12"
       xs="12"
       sm="8"
       md="8"
-      class="header__right header__row"
-      :class="$vuetify.breakpoint.name === 'xs' && 'd-none'"
+      class="header__right header__row my-15"
     >
       <v-badge color="#49A342" bordered bottom dot overlap>
         <img
@@ -46,6 +75,7 @@
 <script lang="ts">
 export default {
   name: "HeaderPage",
+  props: ["drawer"],
   data() {
     return {
       notification: 1,
@@ -115,5 +145,8 @@ export default {
 }
 .row {
   flex: 0 !important;
+}
+.position-fixed {
+  position: fixed;
 }
 </style>

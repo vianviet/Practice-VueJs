@@ -1,12 +1,15 @@
 <template>
   <v-app>
-    <HeaderPage @eventChangeSidebar="changeSideBar"></HeaderPage>
+    <HeaderPage
+      @eventChangeSidebar="changeSideBar"
+      @eventChangDrawer="changeDrawer"
+      :drawer.sync="isDrawer"
+    ></HeaderPage>
     <v-main>
       <side-bar
         :isMobile="$vuetify.breakpoint.name === 'xs' ? true : false"
         :miniSidebar="miniSidebar"
         :drawer.sync="isDrawer"
-        @eventChangDrawer="changeDrawer"
       >
       </side-bar>
       <router-view />
@@ -34,8 +37,8 @@ export default Vue.extend({
         this.miniSidebar = !this.miniSidebar;
       }
     },
-    changeDrawer() {
-      this.isDrawer = !this.isDrawer;
+    changeDrawer(data: any) {
+      this.isDrawer = data;
     },
   },
 });
