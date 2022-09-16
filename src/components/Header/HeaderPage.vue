@@ -16,6 +16,7 @@
         /></router-link>
         <v-icon @click="changeSidebar">mdi-menu</v-icon>
       </v-col>
+
       <v-col
         xl="8"
         lg="8"

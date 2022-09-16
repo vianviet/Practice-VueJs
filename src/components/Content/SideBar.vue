@@ -11,21 +11,19 @@
     >
       <v-list dense>
         <div class="mx-4">
-          <v-list-item link>
-            <v-list-item-icon>
-              <v-icon>mdi-laptop</v-icon>
-            </v-list-item-icon>
-            <v-list-item-title>Dashboard</v-list-item-title>
-          </v-list-item>
           <div v-for="each in items" :key="each.type">
-            <v-list-item-content :class="miniSidebar && 'd-none'">
-              <h4 class="px-4">{{ each.name }}</h4>
+            <v-list-item-content
+              v-if="each.name !== null"
+              :class="miniSidebar && 'd-none'"
+            >
+              <h4>{{ each.name }}</h4>
             </v-list-item-content>
             <v-list-item
-              :to="`${item.path}`"
+              active-class="link-active"
               class="my-3"
               v-for="item in each.data"
               :key="item.title"
+              :to="item.subNav.length === 0 ? `${item.path}` : null"
               link
             >
               <v-menu offset-x>
@@ -37,7 +35,9 @@
                     v-on="miniSidebar && !isMobile ? on : ''"
                     no-action
                     class="w-100"
-                    append-icon="mdi-chevron-right"
+                    :append-icon="
+                      item.subNav.length > 0 ? 'mdi-chevron-right' : ''
+                    "
                   >
                     <template v-slot:activator>
                       <v-list-item-icon>
@@ -65,17 +65,22 @@
                 </template>
                 <v-list
                   v-if="item.subNav.length === 0 ? false : true"
-                  class="content-menu"
+                  class="content__menu"
                 >
+                  <v-list-item class="content__menu__title">
+                    {{ item.title }}
+                  </v-list-item>
                   <v-list-item
                     v-for="(subItem, index) in item.subNav"
                     :key="index"
+                    :to="`${item.path}${subItem.path}`"
                     link
                   >
-                    <v-list-item-icon>
+                    <v-list-item-icon class="content__menu__icon">
                       <v-icon v-text="`mdi-${subItem.icon}`"></v-icon>
                     </v-list-item-icon>
                     <v-list-item-title
+                      class="content__menu__text"
                       v-text="subItem.title"
                     ></v-list-item-title>
                   </v-list-item>
@@ -95,8 +100,19 @@ export default {
   props: ["miniSidebar", "isMobile", "drawer"],
   data() {
     return {
-      path: "",
+      path: "/",
       items: [
+        {
+          name: null,
+          data: [
+            {
+              title: "Dashboard",
+              icon: "mdi-laptop",
+              path: "/home",
+              subNav: [],
+            },
+          ],
+        },
         {
           name: "UI ELEMENTS",
           data: [
@@ -173,7 +189,7 @@ export default {
                 },
                 {
                   title: "Themefy Icons",
-                  path: "/themefy icons",
+                  path: "/themefy-icons",
                   icon: "connection",
                 },
               ],
@@ -254,10 +270,9 @@ export default {
   watch: {
     $route(to, from) {
       if (to.matched[0].path !== undefined) {
-        console.log("hahaha");
         this.path = to.matched[0].path;
       } else {
-        this.path = "";
+        this.path = "/";
       }
     },
   },
@@ -292,12 +307,23 @@ export default {
 }
 
 .v-menu__content {
+  width: 180px !important;
   left: 56px !important;
   .v-list {
     padding: 0 !important;
   }
   .v-list-item {
     padding: 0px 10px;
+  }
+}
+.link-active {
+  background-color: #ffffff;
+}
+.content__menu {
+  &__title {
+    border-bottom: 1px solid #cacacf;
+  }
+  &__icon {
   }
 }
 </style>

@@ -9,6 +9,7 @@ const routes: Array<RouteConfig> = [
   {
     path: "/",
     name: "home",
+    alias: ["/home"],
     component: HomeView,
   },
   {

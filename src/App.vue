@@ -5,11 +5,13 @@
       @eventChangDrawer="changeDrawer"
       :drawer.sync="isDrawer"
     ></HeaderPage>
+
     <v-main>
       <side-bar
-        :isMobile="$vuetify.breakpoint.name === 'xs' ? true : false"
+        :isMobile="breakpoint === 'xs' ? true : false"
         :miniSidebar="miniSidebar"
         :drawer.sync="isDrawer"
+        @eventChangDrawer="changeDrawer"
       >
       </side-bar>
       <div :class="handleChangeSize">
@@ -29,11 +31,12 @@ export default Vue.extend({
   data: () => ({
     miniSidebar: false,
     isDrawer: false,
+    breakpoint: "",
   }),
   components: { HeaderPage, SideBar },
   methods: {
     changeSideBar() {
-      if (this.$vuetify.breakpoint.name === "xs") {
+      if (this.breakpoint === "xs") {
         this.isDrawer = !this.isDrawer;
       } else {
         this.miniSidebar = !this.miniSidebar;
@@ -46,7 +49,7 @@ export default Vue.extend({
   computed: {
     handleChangeSize() {
       if (this.miniSidebar) {
-        switch (this.$vuetify.breakpoint.name) {
+        switch (this.breakpoint) {
           case "xs":
             return "main__xs__mb";
           case "sm":
@@ -59,7 +62,7 @@ export default Vue.extend({
             return "main__xl__mb";
         }
       } else {
-        switch (this.$vuetify.breakpoint.name) {
+        switch (this.breakpoint) {
           case "xs":
             return "main__xs";
           case "sm":
@@ -74,9 +77,25 @@ export default Vue.extend({
       }
     },
   },
-  // updated() {
-  //   console.log("mimi", this.$vuetify.breakpoint.name);
-  // },
+  watch: {
+    $vuetify: {
+      handler(to, from) {
+        if (this.breakpoint !== to.breakpoint.name) {
+          this.breakpoint = to.breakpoint.name;
+          if (this.breakpoint === "sm") {
+            this.miniSidebar = true;
+          } else {
+            this.miniSidebar = false;
+          }
+        }
+      },
+      deep: true,
+      immediate: true,
+    },
+  },
+  beforeUpdate() {
+    if (this.breakpoint !== "xs") this.isDrawer = false;
+  },
 });
 </script>
 
@@ -113,7 +132,7 @@ export default Vue.extend({
   }
   &__sm {
     padding: 10px 10px;
-    margin-left: 256px;
+    margin-left: 56px;
     &__mb {
       padding: 10px 10px;
       margin-left: 56px;
