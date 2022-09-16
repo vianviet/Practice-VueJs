@@ -22,6 +22,7 @@
               <h4 class="px-4">{{ each.name }}</h4>
             </v-list-item-content>
             <v-list-item
+              :to="`${item.path}`"
               class="my-3"
               v-for="item in each.data"
               :key="item.title"
@@ -30,6 +31,8 @@
               <v-menu offset-x>
                 <template v-slot:activator="{ on, attrs }">
                   <v-list-group
+                    :value="getPath(item.path)"
+                    :key="item.title"
                     v-bind="attrs"
                     v-on="miniSidebar && !isMobile ? on : ''"
                     no-action
@@ -92,6 +95,7 @@ export default {
   props: ["miniSidebar", "isMobile", "drawer"],
   data() {
     return {
+      path: "",
       items: [
         {
           name: "UI ELEMENTS",
@@ -99,7 +103,7 @@ export default {
             {
               title: "Components",
               icon: "mdi-cogs",
-              path: "/component",
+              path: "/components",
               subNav: [
                 {
                   title: "Button",
@@ -108,7 +112,7 @@ export default {
                 },
                 {
                   title: "Badges",
-                  path: "/badge",
+                  path: "/badges",
                   icon: "police-badge-outline",
                 },
                 {
@@ -240,6 +244,21 @@ export default {
       set(value) {
         this.$emit("eventChangDrawer", value);
       },
+    },
+  },
+  methods: {
+    getPath(data) {
+      return data === this.path;
+    },
+  },
+  watch: {
+    $route(to, from) {
+      if (to.matched[0].path !== undefined) {
+        console.log("hahaha");
+        this.path = to.matched[0].path;
+      } else {
+        this.path = "";
+      }
     },
   },
 };
