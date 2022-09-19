@@ -108,7 +108,7 @@ export default {
             {
               title: "Dashboard",
               icon: "mdi-laptop",
-              path: "/home",
+              path: "/",
               subNav: [],
             },
           ],
@@ -281,6 +281,7 @@ export default {
 
 <style lang="scss">
 .sidebar-main {
+  z-index: 1;
   aside {
     min-height: 100vh;
   }
