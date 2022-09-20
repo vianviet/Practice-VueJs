@@ -16,6 +16,7 @@
             :cardTitle="item.cardTitle"
             :cardSubtitle="item.cardSubtitle"
             :iconSize="item.iconSize"
+            :dollarSign="item.dollarSign"
           />
         </v-card>
       </v-col>
@@ -36,47 +37,48 @@ export default {
         {
           iconColor: "green",
           icon: "mdi-cash",
-          cardTitle: `$${0}`,
+          cardTitle: "0",
           cardSubtitle: "Revenue",
           iconSize: 50,
+          dollarSign: true,
+          value: 23569,
         },
         {
           iconColor: "purple",
           icon: "mdi-cart",
-          cardTitle: `${0}`,
+          cardTitle: "0",
           cardSubtitle: "Sales",
           iconSize: 50,
+          dollarSign: false,
+          value: 3435,
         },
         {
           iconColor: "blue",
           icon: "mdi-cog-outline",
-          cardTitle: `${0}`,
+          cardTitle: "0",
           cardSubtitle: "Templates",
           iconSize: 50,
+          dollarSign: false,
+          value: 349,
         },
         {
           iconColor: "orange",
           icon: "mdi-cash",
-          cardTitle: `${0}`,
+          cardTitle: "0",
           cardSubtitle: "Clients",
           iconSize: 50,
+          dollarSign: false,
+          value: 2986,
         },
       ],
     };
   },
   name: "dash-board",
   created() {
-    animateNumber(23569, 3000, 10, (data) => {
-      this.cardItems[0].cardTitle = `$${data}`;
-    });
-    animateNumber(3435, 3000, 10, (data) => {
-      this.cardItems[1].cardTitle = `${data}`;
-    });
-    animateNumber(349, 3000, 10, (data) => {
-      this.cardItems[2].cardTitle = `${data}`;
-    });
-    animateNumber(2986, 3000, 10, (data) => {
-      this.cardItems[3].cardTitle = `${data}`;
+    this.cardItems.forEach((each) => {
+      animateNumber(each.value, 2000, 10, (data) => {
+        each.cardTitle = `${data}`;
+      });
     });
   },
 };

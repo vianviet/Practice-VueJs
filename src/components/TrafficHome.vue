@@ -1,14 +1,14 @@
 <template>
-  <div class="traffic-home">
-    <b>Traffic</b>
+  <div class="traffic pb-10">
+    <div class="traffic__title">Traffic</div>
     <v-container>
       <!-- Stack the columns on mobile by making one full-width and the other half-width -->
       <v-row>
-        <v-col cols="12" md="8">
-          <v-card class="pa-2"><LeftTraffic /></v-card>
+        <v-col cols="12" md="9" lg="9">
+          <LeftTraffic />
         </v-col>
-        <v-col cols="12" md="4">
-          <v-card class="pa-2"> <RightTraffic /> </v-card>
+        <v-col cols="12" md="3" lg="3">
+          <RightTraffic />
         </v-col>
       </v-row>
     </v-container>
@@ -24,10 +24,14 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
-.traffic-home {
+<style lang="scss">
+.traffic {
   background-color: #fff;
-  padding: 1.25em;
   margin: 2rem 0;
+  border-radius: 10px;
+  &__title {
+    font-weight: 600;
+    padding: 20px;
+  }
 }
 </style>

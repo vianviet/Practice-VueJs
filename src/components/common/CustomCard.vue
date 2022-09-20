@@ -8,7 +8,7 @@
       </div>
       <v-list-item-content>
         <v-list-item-title class="text-h5 mb-1">
-          {{ cardTitle }}
+          {{ `${dollarSign ? `$` : ""}${cardTitle}` }}
         </v-list-item-title>
         <v-list-item-subtitle>{{ cardSubtitle }}</v-list-item-subtitle>
       </v-list-item-content>
@@ -39,6 +39,10 @@ export default {
     iconColor: {
       type: String,
       default: "",
+    },
+    dollarSign: {
+      type: Boolean,
+      default: false,
     },
   },
 };

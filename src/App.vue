@@ -1,5 +1,5 @@
 <template>
-  <v-app>
+  <v-app class="app">
     <HeaderPage
       @eventChangeSidebar="changeSideBar"
       @eventChangDrawer="changeDrawer"
@@ -100,6 +100,9 @@ export default Vue.extend({
 </script>
 
 <style lang="scss">
+.app {
+  background-color: #f0f1f6 !important;
+}
 .v-main {
   position: absolute;
   top: 56px;

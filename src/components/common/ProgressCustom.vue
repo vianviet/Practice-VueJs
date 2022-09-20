@@ -1,9 +1,9 @@
 <template>
   <div class="progress-item">
-    <p class="progress-item">{{ title }}</p>
-    <p class="progress-info">
+    <div class="progress-item__title">{{ title }}</div>
+    <div class="progress-info">
       {{ info }}
-    </p>
+    </div>
     <v-progress-linear
       :color="progressColor"
       :value="value"
@@ -35,4 +35,15 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.progress-item {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  &__title {
+    font-size: 1em;
+    font-weight: 600;
+    color: #868e96;
+  }
+}
+</style>
