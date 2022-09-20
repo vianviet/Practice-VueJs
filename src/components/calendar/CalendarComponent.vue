@@ -54,6 +54,7 @@
           @change="updateRange"
         ></v-calendar>
         <v-menu
+          key="2"
           v-model="selectedOpen"
           :close-on-content-click="false"
           :activator="selectedElement"

@@ -10,9 +10,10 @@
       :width="isMobile ? '100%' : 256"
     >
       <v-list dense>
-        <div class="mx-4">
+        <div>
           <div v-for="each in items" :key="each.type">
             <v-list-item-content
+              class="mx-4"
               v-if="each.name !== null"
               :class="miniSidebar && 'd-none'"
             >
@@ -279,7 +280,7 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .sidebar-main {
   z-index: 1;
   aside {
