@@ -22,6 +22,8 @@
       </v-col>
     </v-row>
     <traffic-home />
+    <dashboard-table-home />
+    <calendar-component />
   </div>
 </template>
 
@@ -29,8 +31,15 @@
 import TrafficHome from "@/components/TrafficHome.vue";
 import CustomCard from "../components/common/CustomCard.vue";
 import animateNumber from "../util/animateNumber";
+import DashboardTableHome from "@/components/DashboardTableHome.vue";
+import CalendarComponent from "@/components/calendar/CalendarComponent.vue";
 export default {
-  components: { CustomCard, TrafficHome },
+  components: {
+    CustomCard,
+    TrafficHome,
+    DashboardTableHome,
+    CalendarComponent,
+  },
   data() {
     return {
       cardItems: [

@@ -5,7 +5,6 @@
       @eventChangDrawer="changeDrawer"
       :drawer.sync="isDrawer"
     ></HeaderPage>
-
     <v-main>
       <side-bar
         :isMobile="breakpoint === 'xs' ? true : false"
@@ -100,60 +99,58 @@ export default Vue.extend({
 </script>
 
 <style lang="scss">
-.app {
-  background-color: #f0f1f6 !important;
-}
 .v-main {
   position: absolute;
   top: 56px;
   width: 100%;
+  background-color: #f0f1f6 !important;
 }
 .main {
   &__xl {
-    padding: 10px 10px;
+    padding: 25px 25px;
     margin-left: 256px;
     &__mb {
-      padding: 10px 10px;
+      padding: 25px 25px;
       margin-left: 56px;
     }
   }
   &__md {
-    padding: 10px 10px;
+    padding: 25px 25px;
     margin-left: 256px;
     &__mb {
-      padding: 10px 10px;
+      padding: 25px 25px;
       margin-left: 56px;
     }
   }
   &__md {
-    padding: 10px 10px;
+    padding: 25px 25px;
     margin-left: 256px;
     &__mb {
-      padding: 10px 10px;
+      padding: 25px 25px;
       margin-left: 56px;
     }
   }
   &__sm {
-    padding: 10px 10px;
+    padding: 25px 25px;
     margin-left: 56px;
     &__mb {
-      padding: 10px 10px;
+      padding: 25px 25px;
       margin-left: 56px;
     }
   }
   &__lg {
-    padding: 10px 10px;
+    padding: 25px 25px;
     margin-left: 256px;
     &__mb {
-      padding: 10px 10px;
+      padding: 25px 25px;
       margin-left: 56px;
     }
   }
   &__xs {
-    padding: 10px 10px;
+    padding: 25px 25px;
     margin-top: 50px;
     &__mb {
-      padding: 10px 10px;
+      padding: 25px 25px;
       margin-top: 50px;
     }
   }
