@@ -83,13 +83,5 @@ export default {
       },
     };
   },
-  created() {
-    setTimeout(() => {
-      this.chartData.datasets[0].data = [0, 32500, 15000, 20000, 15000, 0];
-      setTimeout(() => {
-        this.chartData.datasets[1].data = [0, 15000, 27500, 15000, 30000, 5000];
-      }, 1500);
-    }, 1500);
-  },
 };
 </script>

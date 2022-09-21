@@ -38,7 +38,6 @@ Chart.register(
 //   alert("hello");
 // };
 // Chart.defaults.datasets.line.spanGaps = true;
-console.log(Chart.defaults);
 
 export default {
   name: "LeftTraffic",

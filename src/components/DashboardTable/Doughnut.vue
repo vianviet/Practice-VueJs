@@ -23,7 +23,6 @@ Chart.register(ArcElement, Legend);
 //   alert("hello");
 // };
 // Chart.defaults.datasets.line.spanGaps = true;
-console.log("2", Chart.defaults);
 
 export default {
   name: "doughnut-chart",

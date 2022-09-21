@@ -1,43 +1,25 @@
 <template>
-  <v-row class="fill-height">
+  <v-row class="fill-height calendar">
     <v-col>
-      <v-sheet height="64">
+      <v-sheet height="64" class="d-flex justify-space-between">
         <v-toolbar flat>
-          <v-btn outlined class="mr-4" color="grey darken-2" @click="setToday">
-            Today
-          </v-btn>
-          <v-btn fab text small color="grey darken-2" @click="prev">
-            <v-icon small> mdi-chevron-left </v-icon>
-          </v-btn>
-          <v-btn fab text small color="grey darken-2" @click="next">
-            <v-icon small> mdi-chevron-right </v-icon>
-          </v-btn>
-          <v-toolbar-title v-if="$refs.calendar">
-            {{ $refs.calendar.title }}
-          </v-toolbar-title>
-          <v-spacer></v-spacer>
-          <v-menu bottom right>
-            <template v-slot:activator="{ on, attrs }">
-              <v-btn outlined color="grey darken-2" v-bind="attrs" v-on="on">
-                <span>{{ typeToLabel[type] }}</span>
-                <v-icon right> mdi-menu-down </v-icon>
-              </v-btn>
-            </template>
-            <v-list>
-              <v-list-item @click="type = 'day'">
-                <v-list-item-title>Day</v-list-item-title>
-              </v-list-item>
-              <v-list-item @click="type = 'week'">
-                <v-list-item-title>Week</v-list-item-title>
-              </v-list-item>
-              <v-list-item @click="type = 'month'">
-                <v-list-item-title>Month</v-list-item-title>
-              </v-list-item>
-              <v-list-item @click="type = '4day'">
-                <v-list-item-title>4 days</v-list-item-title>
-              </v-list-item>
-            </v-list>
-          </v-menu>
+          <div class="calendar__toolbar__left">
+            {{
+              $refs.calendar
+                ? $refs.calendar.title
+                : `${
+                    monthNames[new Date().getMonth()]
+                  } ${new Date().getFullYear()}`
+            }}
+          </div>
+          <div class="calendar__toolbar__right">
+            <v-btn fab text small color="grey darken-2" @click="prev">
+              <v-icon small> mdi-chevron-left </v-icon>
+            </v-btn>
+            <v-btn fab text small color="grey darken-2" @click="next">
+              <v-icon small> mdi-chevron-right </v-icon>
+            </v-btn>
+          </div>
         </v-toolbar>
       </v-sheet>
       <v-sheet height="600">
@@ -51,7 +33,8 @@
           @click:event="showEvent"
           @click:more="viewDay"
           @click:date="viewDay"
-          @change="updateRange"
+          @click:day="viewDay"
+          @change="handleChange"
         ></v-calendar>
         <v-menu
           key="2"
@@ -86,13 +69,68 @@
         </v-menu>
       </v-sheet>
     </v-col>
+    <v-dialog v-model="dialog" persistent max-width="600px">
+      <!-- <template v-slot:activator="{ on, attrs }">
+        <v-btn color="primary" dark v-bind="attrs" v-on="on">
+          Open Dialog
+        </v-btn>
+      </template> -->
+      <v-card>
+        <form>
+          <v-card-title>
+            <span class="text-h5">Add New Event</span>
+          </v-card-title>
+          <v-card-text>
+            <v-container>
+              <v-row>
+                <v-col cols="12" sm="6">
+                  <v-text-field label="Event Name" required></v-text-field>
+                </v-col>
+                <v-col cols="12" sm="6">
+                  <v-select
+                    :items="colors"
+                    label="Category"
+                    required
+                  ></v-select>
+                </v-col>
+              </v-row>
+            </v-container>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="blue darken-1" text @click="dialog = false">
+              Close
+            </v-btn>
+            <v-btn color="blue darken-1" text @click="addEvent">
+              Create event
+            </v-btn>
+          </v-card-actions>
+        </form>
+      </v-card>
+    </v-dialog>
   </v-row>
 </template>
 
 <script>
+const monthNames = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
 export default {
   name: "calendar-component",
   data: () => ({
+    dialog: false,
+    monthNames,
     focus: "",
     type: "month",
     typeToLabel: {
@@ -104,7 +142,15 @@ export default {
     selectedEvent: {},
     selectedElement: null,
     selectedOpen: false,
-    events: [],
+    events: [
+      {
+        name: "Hello",
+        start: new Date(),
+        end: new Date(),
+        color: "blue",
+        timed: true,
+      },
+    ],
     colors: [
       "blue",
       "indigo",
@@ -125,13 +171,20 @@ export default {
       "Party",
     ],
   }),
-  mounted() {
-    this.$refs.calendar.checkChange();
-  },
   methods: {
+    handleChange(e) {
+      console.log(e);
+    },
     viewDay({ date }) {
+      console.log(date);
       this.focus = date;
-      this.type = "day";
+      this.dialog = true;
+      // this.selectedOpen = true;
+      // this.type = "day";
+    },
+    addEvent() {
+      this.dialog = false;
+      this.$vuetify.$touch();
     },
     getEventColor(event) {
       return event.color;
@@ -195,3 +248,13 @@ export default {
   },
 };
 </script>
+
+<style lang="scss">
+.calendar {
+  .v-toolbar__content {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+  }
+}
+</style>
