@@ -23,7 +23,7 @@
     </v-row>
     <traffic-home />
     <dashboard-table-home />
-    <calendar-component />
+    <todo-list-home></todo-list-home>
   </div>
 </template>
 
@@ -32,13 +32,13 @@ import TrafficHome from "@/components/TrafficHome.vue";
 import CustomCard from "../components/common/CustomCard.vue";
 import animateNumber from "../util/animateNumber";
 import DashboardTableHome from "@/components/DashboardTableHome.vue";
-import CalendarComponent from "@/components/calendar/CalendarComponent.vue";
+import TodoListHome from "@/components/TodoListHome.vue";
 export default {
   components: {
     CustomCard,
     TrafficHome,
     DashboardTableHome,
-    CalendarComponent,
+    TodoListHome,
   },
   data() {
     return {
@@ -94,6 +94,11 @@ export default {
 </script>
 
 <style lang="scss">
+.home-page {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
 .col-card {
   //   padding: 0 !important;
 }

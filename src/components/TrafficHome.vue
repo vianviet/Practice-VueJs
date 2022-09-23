@@ -27,7 +27,6 @@ export default {
 <style lang="scss">
 .traffic {
   background-color: #fff;
-  margin: 2rem 0;
   border-radius: 10px;
   &__title {
     font-weight: 600;

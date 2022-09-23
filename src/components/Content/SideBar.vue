@@ -285,6 +285,7 @@ export default {
   z-index: 1;
   aside {
     min-height: 100vh;
+    transition: width 0.5s ease 0s;
   }
   .v-list {
     padding: 0 !important;

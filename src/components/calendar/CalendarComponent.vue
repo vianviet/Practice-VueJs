@@ -36,7 +36,52 @@
           @click:day="viewDay"
           @change="handleChange"
         ></v-calendar>
-        <v-menu
+        <v-dialog v-model="selectedOpen" persistent max-width="600px">
+          <v-card>
+            <form>
+              <v-card-title>
+                <span class="text-h5">Edit Event</span>
+              </v-card-title>
+              <v-card-text>
+                <v-container>
+                  <v-row>
+                    <v-col cols="12" sm="9">
+                      <v-text-field
+                        v-model="selectedEvent.name"
+                        label="Event Name"
+                        required
+                        autofocus
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="12" sm="3">
+                      <v-btn
+                        color="blue darken-1"
+                        text
+                        @click="editEvent(selectedEvent.id)"
+                      >
+                        Edit
+                      </v-btn>
+                    </v-col>
+                  </v-row>
+                </v-container>
+              </v-card-text>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="blue darken-1" text @click="selectedOpen = false">
+                  Close
+                </v-btn>
+                <v-btn
+                  color="blue darken-1"
+                  text
+                  @click="deleteEvent(selectedEvent.id)"
+                >
+                  Delete
+                </v-btn>
+              </v-card-actions>
+            </form>
+          </v-card>
+        </v-dialog>
+        <!-- <v-menu
           key="2"
           v-model="selectedOpen"
           :close-on-content-click="false"
@@ -66,7 +111,7 @@
               </v-btn>
             </v-card-actions>
           </v-card>
-        </v-menu>
+        </v-menu> -->
       </v-sheet>
     </v-col>
     <v-dialog v-model="dialog" persistent max-width="600px">
@@ -84,10 +129,16 @@
             <v-container>
               <v-row>
                 <v-col cols="12" sm="6">
-                  <v-text-field label="Event Name" required></v-text-field>
+                  <v-text-field
+                    v-model="nameInput"
+                    label="Event Name"
+                    required
+                    autofocus
+                  ></v-text-field>
                 </v-col>
                 <v-col cols="12" sm="6">
                   <v-select
+                    v-model="colorSelected"
                     :items="colors"
                     label="Category"
                     required
@@ -131,6 +182,8 @@ export default {
   data: () => ({
     dialog: false,
     monthNames,
+    nameInput: "",
+    colorSelected: "",
     focus: "",
     type: "month",
     typeToLabel: {
@@ -142,15 +195,7 @@ export default {
     selectedEvent: {},
     selectedElement: null,
     selectedOpen: false,
-    events: [
-      {
-        name: "Hello",
-        start: new Date(),
-        end: new Date(),
-        color: "blue",
-        timed: true,
-      },
-    ],
+    events: [],
     colors: [
       "blue",
       "indigo",
@@ -176,7 +221,6 @@ export default {
       console.log(e);
     },
     viewDay({ date }) {
-      console.log(date);
       this.focus = date;
       this.dialog = true;
       // this.selectedOpen = true;
@@ -184,7 +228,27 @@ export default {
     },
     addEvent() {
       this.dialog = false;
-      this.$vuetify.$touch();
+      const newEvent = {
+        id: 1,
+        name: this.nameInput,
+        start: this.focus,
+        end: this.focus,
+        color: this.colorSelected === "" ? "blue" : this.colorSelected,
+        timed: false,
+      };
+      this.checkId(newEvent);
+      this.events.push(newEvent);
+      this.nameInput = "";
+      this.colorSelected === "blue";
+    },
+    editEvent(data) {
+      console.log("edit", data);
+      this.selectedOpen = false;
+    },
+    deleteEvent(id) {
+      const deleteElement = this.events.findIndex((each) => each.id === id);
+      this.events.splice(deleteElement, 1);
+      this.selectedOpen = false;
     },
     getEventColor(event) {
       return event.color;
@@ -198,6 +262,7 @@ export default {
     next() {
       this.$refs.calendar.next();
     },
+
     showEvent({ nativeEvent, event }) {
       const open = () => {
         this.selectedEvent = event;
@@ -244,6 +309,17 @@ export default {
     },
     rnd(a, b) {
       return Math.floor((b - a + 1) * Math.random()) + a;
+    },
+    checkId(object) {
+      const isExistId = this.events.some((each) => {
+        if (each.id === object.id) {
+          return true;
+        }
+      });
+      if (isExistId) {
+        object.id = object.id + 1;
+        this.checkId(object);
+      }
     },
   },
 };

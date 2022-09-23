@@ -99,6 +99,9 @@ export default Vue.extend({
 </script>
 
 <style lang="scss">
+.title {
+  font-weight: 600;
+}
 .v-main {
   position: absolute;
   top: 56px;
