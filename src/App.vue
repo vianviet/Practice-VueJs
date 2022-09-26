@@ -13,8 +13,20 @@
         @eventChangDrawer="changeDrawer"
       >
       </side-bar>
-      <div :class="handleChangeSize">
+      <div :class="handleChangeSize" ref="main">
         <router-view />
+        <v-btn
+          elevation="2"
+          fab
+          color="pink"
+          dark
+          fixed
+          bottom
+          right
+          @click="scrollToTop"
+        >
+          <v-icon>mdi-arrow-up-circle</v-icon>
+        </v-btn>
       </div>
     </v-main>
   </v-app>
@@ -43,6 +55,13 @@ export default Vue.extend({
     },
     changeDrawer(data: any) {
       this.isDrawer = data;
+    },
+    scrollToTop() {
+      console.log(this.$refs.main);
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
     },
   },
   computed: {
@@ -99,6 +118,15 @@ export default Vue.extend({
 </script>
 
 <style lang="scss">
+.move-to-top {
+  display: flex;
+  flex-direction: row-reverse;
+  cursor: pointer;
+  i :hover {
+    background-color: red;
+  }
+}
+
 .title {
   font-weight: 600;
 }

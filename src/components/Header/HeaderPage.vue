@@ -115,7 +115,7 @@ export default {
 
 <style lang="scss">
 .header {
-  z-index: 1;
+  z-index: 2;
   position: fixed;
   width: 100vw;
   display: flex;

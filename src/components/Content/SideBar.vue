@@ -282,7 +282,7 @@ export default {
 
 <style lang="scss" scoped>
 .sidebar-main {
-  z-index: 1;
+  z-index: 2;
   aside {
     min-height: 100vh;
     transition: width 0.5s ease 0s;

@@ -24,6 +24,7 @@
     <traffic-home />
     <dashboard-table-home />
     <todo-list-home></todo-list-home>
+    <calendar-home></calendar-home>
   </div>
 </template>
 
@@ -33,12 +34,14 @@ import CustomCard from "../components/common/CustomCard.vue";
 import animateNumber from "../util/animateNumber";
 import DashboardTableHome from "@/components/DashboardTableHome.vue";
 import TodoListHome from "@/components/TodoListHome.vue";
+import CalendarHome from "@/components/CalendarHome.vue";
 export default {
   components: {
     CustomCard,
     TrafficHome,
     DashboardTableHome,
     TodoListHome,
+    CalendarHome,
   },
   data() {
     return {

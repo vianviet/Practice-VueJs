@@ -22,7 +22,7 @@
           </div>
         </v-toolbar>
       </v-sheet>
-      <v-sheet height="600">
+      <v-sheet height="300">
         <v-calendar
           ref="calendar"
           v-model="focus"
@@ -31,7 +31,7 @@
           :event-color="getEventColor"
           :type="type"
           @click:event="showEvent"
-          @click:more="viewDay"
+          @click:more="selectedMore = true"
           @click:date="viewDay"
           @click:day="viewDay"
           @change="handleChange"
@@ -81,9 +81,9 @@
             </form>
           </v-card>
         </v-dialog>
-        <!-- <v-menu
+        <v-menu
           key="2"
-          v-model="selectedOpen"
+          v-model="selectedMore"
           :close-on-content-click="false"
           :activator="selectedElement"
           offset-x
@@ -111,15 +111,10 @@
               </v-btn>
             </v-card-actions>
           </v-card>
-        </v-menu> -->
+        </v-menu>
       </v-sheet>
     </v-col>
     <v-dialog v-model="dialog" persistent max-width="600px">
-      <!-- <template v-slot:activator="{ on, attrs }">
-        <v-btn color="primary" dark v-bind="attrs" v-on="on">
-          Open Dialog
-        </v-btn>
-      </template> -->
       <v-card>
         <form>
           <v-card-title>
@@ -195,6 +190,7 @@ export default {
     selectedEvent: {},
     selectedElement: null,
     selectedOpen: false,
+    selectedMore: false,
     events: [],
     colors: [
       "blue",
@@ -223,8 +219,6 @@ export default {
     viewDay({ date }) {
       this.focus = date;
       this.dialog = true;
-      // this.selectedOpen = true;
-      // this.type = "day";
     },
     addEvent() {
       this.dialog = false;
@@ -331,6 +325,16 @@ export default {
     width: 100%;
     display: flex;
     justify-content: space-between;
+  }
+  .v-btn--fab.v-size--small {
+    height: auto;
+    width: auto;
+  }
+  .v-calendar-weekly__day-label {
+    margin: 0;
+  }
+  .v-calendar-weekly__day-label {
+    text-align: right !important;
   }
 }
 </style>
