@@ -11,15 +11,18 @@
           margin: '0 0 0 5px',
         }"
       />
-      <div>{{ time }}</div>
+      <div class="text-sm-body-2 text-center">{{ time }}</div>
     </div>
-    <div class="message__user d-flex" :class="isUser ? 'flex-row-reverse' : ''">
+    <div
+      class="message__user d-flex"
+      :class="`${isUser && 'flex-row-reverse'} ${!uploaded && 'uploaded'}`"
+    >
       <v-icon :class="isUser ? 'support-icon-user' : 'support-icon-guest'"
         >mdi-triangle</v-icon
       >
       <div class="message__content">
         <div class="px-2 pt-2">{{ title }}</div>
-        <div class="pa-2">{{ message }}</div>
+        <div class="pa-2 text-sm-body-2">{{ message }}</div>
       </div>
     </div>
   </div>
@@ -49,6 +52,10 @@ export default {
       type: String,
       default: "11.11 am",
     },
+    uploaded: {
+      type: Boolean,
+      default: true,
+    },
   },
 };
 </script>
@@ -59,11 +66,15 @@ export default {
     min-width: 70px;
     height: 60px;
   }
+  .uploaded {
+    opacity: 0.6;
+  }
   .message__user {
     width: 85%;
   }
 }
 .message__content {
+  max-width: 93%;
   background-color: #f1f2f7 !important;
   border-radius: 10px;
   z-index: 1;

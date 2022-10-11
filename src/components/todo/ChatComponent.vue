@@ -1,7 +1,17 @@
 <template>
   <v-card class="pa-3 d-flex flex-column chat-home">
+    <audio controls ref="audio" class="d-none">
+      <source src="../../../public/sounds/test.mp3" type="audio/mpeg" />
+      Your browser does not support the audio tag.
+    </audio>
     <div class="title pa-3">Live Chat</div>
-    <div class="chat__content" ref="chat">
+    <div class="chat__content" ref="chat" v-on:scroll="onScroll">
+      <div class="load-more" v-if="isLoadingMore">
+        <v-progress-circular
+          indeterminate
+          color="primary"
+        ></v-progress-circular>
+      </div>
       <message-chat
         v-for="(item, index) in messageData"
         :key="index"
@@ -10,9 +20,14 @@
         :title="item.title"
         :message="item.message"
         :time="item.time"
-      ></message-chat>
+        :uploaded="item.uploaded"
+      >
+      </message-chat>
+      <div v-if="receiveTyping" class="typing">
+        {{ userTyping }} is typing...
+      </div>
     </div>
-    <div class="typing">Typing</div>
+
     <div class="input__message">
       <v-text-field
         v-model="inputMessage"
@@ -24,138 +39,196 @@
 </template>
 
 <script>
+import messageApi from "@/api/messageApi";
 import MessageChat from "../common/MessageChat.vue";
+import { messageDtos } from "../../util/convertAPI/messageUtil";
+let timeout;
 export default {
   components: { MessageChat },
   name: "chat-component",
   data() {
     return {
+      stopLoadMore: false,
+      bonus: 0,
+      page: 1,
+      isLoadingMore: false,
       room: "0001",
       inputMessage: "",
       typing: false,
+      receiveTyping: false,
+      userTyping: "",
+      isConnected: false,
       messageData: [
-        {
-          title: "John Doe",
-          message:
-            "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Perspiciatis sunt placeat velit ad reiciendis ipsam",
-          isUser: false,
-          image: "https://technext.github.io/elaadmin/images/avatar/64-1.jpg",
-          time: "11.11 am",
-        },
-        {
-          title: "John Cena",
-          message: "how are you ?",
-          isUser: true,
-          image: "https://technext.github.io/elaadmin/images/avatar/64-2.jpg",
-          time: "11.11 am",
-        },
+        // {
+        //   title: "John Doe",
+        //   message:
+        //     "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Perspiciatis sunt placeat velit ad reiciendis ipsam",
+        //   isUser: false,
+        //   image: "https://technext.github.io/elaadmin/images/avatar/64-1.jpg",
+        //   time: "11.11 am",
+        // },
+        // {
+        //   title: "John Cena",
+        //   message: "how are you ?",
+        //   isUser: true,
+        //   image: "https://technext.github.io/elaadmin/images/avatar/64-2.jpg",
+        //   time: "11.11 am",
+        // },
       ],
     };
   },
   methods: {
+    onScroll(e) {
+      if (
+        e.srcElement.scrollTop === 0 &&
+        !this.isLoadingMore &&
+        !this.stopLoadMore
+      ) {
+        this.isLoadingMore = true;
+        this.page = this.page + 1;
+        const test = this.$refs.chat.scrollHeight;
+        setTimeout(() => {
+          messageApi.getMessage("1", this.page, this.bonus).then((data) => {
+            if (data.data.message.length === 0) this.stopLoadMore = true;
+            this.messageData.unshift(...messageDtos(data.data.message));
+            this.isLoadingMore = false;
+            setTimeout(() => {
+              this.$refs.chat.scrollTop =
+                this.$refs.chat.scrollHeight - test - 100;
+            }, 0);
+          });
+        }, 0);
+      }
+    },
+    scrollToChat() {
+      let a = this.$refs.chat;
+      setTimeout(() => {
+        a.scrollTop = a.scrollHeight;
+      }, 0);
+    },
+    callback(data) {
+      return new Promise((resolve, reject) => {
+        this.$socket.emit("sendMessage", data, (err, res) => {
+          if (err) {
+            return reject(err);
+          }
+          return resolve(res);
+        });
+      });
+    },
     sendMessage(e) {
       if (e.keyCode == 13) {
         if (this.inputMessage !== "") {
-          this.$socket.emit("sendMessage", {
-            room: this.room,
-            message: this.inputMessage,
-          });
-          this.messageData.push({
-            title: "Nguoi gui",
+          var today = new Date();
+          const message = {
+            title: this.$store.state.email,
             message: this.inputMessage,
             isUser: true,
-            image: "https://technext.github.io/elaadmin/images/avatar/64-2.jpg",
-            time: "11.12 am",
-          });
-          this.inputMessage = "";
-          let a = this.$refs.chat;
-          setTimeout(() => {
-            a.scrollTop = a.scrollHeight;
-          }, 0);
+            image: this.$store.state.avatar,
+            time: `${today.toLocaleTimeString("en-US", { hour12: false })}`,
+            uploaded: false,
+          };
+          this.messageData.push(message);
+
+          this.timeoutFunction();
+          this.scrollToChat();
+          this.callback({
+            room: this.room,
+            email: this.$store.state.email,
+            message: this.inputMessage,
+            avatar: this.$store.state.avatar,
+          })
+            .then((data) => {
+              message.uploaded = true;
+            })
+            .catch((err) => {
+              this.inputMessage = "";
+            });
         }
+        this.inputMessage = "";
       } else {
         this.onKeyDownNotEnter();
       }
     },
     timeoutFunction() {
-      this.$socket.emit("typing", { room: this.room, typing: this.typing });
+      this.typing = false;
+      this.$socket.emit("typing", {
+        room: this.room,
+        typing: this.typing,
+        email: this.$store.state.email,
+      });
     },
     onKeyDownNotEnter() {
-      let timeout;
       if (this.typing == false) {
         this.typing = true;
-        this.$socket.emit("typing", { room: this.room, typing: this.typing });
-        timeout = setTimeout(this.timeoutFunction(), 5000);
+        this.$socket.emit("typing", {
+          room: this.room,
+          typing: this.typing,
+          email: this.$store.state.email,
+        });
+        timeout = setTimeout(() => this.timeoutFunction(), 2000);
       } else {
         clearTimeout(timeout);
-        timeout = setTimeout(this.timeoutFunction(), 5000);
+        timeout = setTimeout(() => this.timeoutFunction(), 2000);
       }
+    },
+    playSound() {
+      this.$refs.audioe.play();
     },
   },
   mounted() {
-    setTimeout(() => {
-      this.$refs.chat.scrollTop = this.$refs.chat.scrollHeight;
-    }, 0);
+    // setTimeout(() => {
+    //   this.$refs.chat.scrollTop = this.$refs.chat.scrollHeight;
+    // }, 0);
   },
   created() {
     this.$socket.emit("room", this.room);
+    messageApi.getMessage("1", 1, this.bonus).then((data) => {
+      this.messageData.push(...messageDtos(data.data.message));
+      this.scrollToChat();
+    });
+  },
+  beforeDestroy() {
+    // this.timeoutFunction();
+    this.$socket.emit("typing", {
+      room: this.room,
+      typing: false,
+      email: this.$store.state.email,
+    });
   },
   sockets: {
     connect() {
-      // Fired when the socket connects.
       this.isConnected = true;
-      console.log("server connected");
     },
     disconnect() {
       this.isConnected = false;
-      console.log("server disconnected");
     },
-    // initRoom: function (message) {
-    //   // Đây là nơi nhận cái even initRoom với param là message mà server emit về
-    //   this.messageData.push({
-    //     title: "John Doe",
-    //     message: message,
-    //     isUser: false,
-    //     image: "https://technext.github.io/elaadmin/images/avatar/64-1.jpg",
-    //     time: "11.11 am",
-    //   });
-    // },
-    // statusRoom: function (message) {
-    //   this.messageData.push({
-    //     title: "John Doe",
-    //     message: message,
-    //     isUser: false,
-    //     image: "https://technext.github.io/elaadmin/images/avatar/64-1.jpg",
-    //     time: "11.11 am",
-    //   });
-    // },
     receiveMessage: function (data) {
-      console.log("message nhan", data);
-      //nhận tín nhắn từ ng khác trong phòng, push tin nhắn vào mảng ban đầu
+      this.playSound();
+      var today = new Date();
       this.messageData.push({
-        title: "Server",
-        message: data,
-        isUser: false,
-        image: "https://technext.github.io/elaadmin/images/avatar/64-1.jpg",
-        time: "11.11 am",
+        title: data.email,
+        message: data.message,
+        isUser: this.$store.state.email === data.email,
+        image: data.avatar,
+        time: `${today.toLocaleTimeString("en-US", { hour12: false })}`,
       });
-      setTimeout(() => {
-        this.$refs.chat.scrollTop = this.$refs.chat.scrollHeight;
-      }, 0);
+      this.bonus = this.bonus + 1;
+      if (this.$refs.chat.scrollHeight - this.$refs.chat.scrollTop < 500) {
+        setTimeout(() => {
+          this.$refs.chat.scrollTop = this.$refs.chat.scrollHeight;
+        }, 0);
+      }
     },
     receiveTyping: function (data) {
-      console.log("typing nhan", data);
       //nhận tín nhắn từ ng khác trong phòng, push tin nhắn vào mảng ban đầu
-      // this.messageData.push({
-      //   title: "Server",
-      //   message: data,
-      //   isUser: false,
-      //   image: "https://technext.github.io/elaadmin/images/avatar/64-1.jpg",
-      //   time: "11.11 am",
-      // });
-      // setTimeout(() => {
-      //   this.$refs.chat.scrollTop = this.$refs.chat.scrollHeight;
-      // }, 0);
+      this.receiveTyping = data.typing;
+      this.userTyping = data.email;
+      // if (this.$refs.chat.scrollTop !== this.$refs.chat.scrollHeight) {
+      //   setTimeout(() => {
+      //     this.$refs.chat.scrollTop = this.$refs.chat.scrollHeight;
+      //   }, 0);
+      // }
     },
   },
 };
@@ -163,15 +236,24 @@ export default {
 <style lang="scss">
 .chat-home {
   gap: 20px;
+  .load-more {
+    text-align: center;
+    z-index: 3;
+    width: 100%;
+  }
   .typing {
     text-align: center;
+    position: absolute;
+    bottom: 100px;
+    z-index: 1;
+    width: 100%;
   }
 }
 .chat__content {
   display: flex;
   flex-direction: column;
   gap: 20px;
-  max-height: 190px;
+  height: 190px;
   overflow-y: scroll;
 }
 .chat__content::-webkit-scrollbar {

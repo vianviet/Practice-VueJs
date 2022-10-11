@@ -12,7 +12,7 @@
         </v-card>
       </v-col>
       <v-col cols="12" md="12" lg="6" class="todo-home-box">
-        <chat-component></chat-component>
+        <chat-component v-if="$store.state.email !== ''"></chat-component>
       </v-col>
     </v-row>
   </div>

@@ -4,7 +4,8 @@
       @eventChangeSidebar="changeSideBar"
       @eventChangDrawer="changeDrawer"
       :drawer.sync="isDrawer"
-    ></HeaderPage>
+    />
+    <search-component v-if="$store.state.openSearch" />
     <v-main>
       <side-bar
         :isMobile="breakpoint === 'xs' ? true : false"
@@ -36,6 +37,7 @@
 import Vue from "vue";
 import SideBar from "./components/Content/SideBar.vue";
 import HeaderPage from "./components/Header/HeaderPage.vue";
+import SearchComponent from "./components/Header/SearchComponent.vue";
 
 export default Vue.extend({
   name: "App",
@@ -44,7 +46,7 @@ export default Vue.extend({
     isDrawer: false,
     breakpoint: "",
   }),
-  components: { HeaderPage, SideBar },
+  components: { HeaderPage, SideBar, SearchComponent },
   methods: {
     changeSideBar() {
       if (this.breakpoint === "xs") {
@@ -57,7 +59,7 @@ export default Vue.extend({
       this.isDrawer = data;
     },
     scrollToTop() {
-      console.log(this.$refs.main);
+      this.$store.dispatch("logout");
       window.scrollTo({
         top: 0,
         behavior: "smooth",

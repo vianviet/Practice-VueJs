@@ -236,7 +236,6 @@ export default {
       this.colorSelected === "blue";
     },
     editEvent(data) {
-      console.log("edit", data);
       this.selectedOpen = false;
     },
     deleteEvent(id) {
@@ -315,6 +314,9 @@ export default {
         this.checkId(object);
       }
     },
+  },
+  mounted() {
+    // this.$store.dispatch("logout");
   },
 };
 </script>

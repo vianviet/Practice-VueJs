@@ -1,4 +1,5 @@
 import NotFound from "@/pages/NotFound.vue";
+import store from "@/store";
 import Vue from "vue";
 import VueRouter, { RouteConfig } from "vue-router";
 import HomeView from "../views/HomeView.vue";
@@ -79,4 +80,17 @@ const router = new VueRouter({
   routes,
 });
 
+router.beforeEach(async (to, from, next) => {
+  const privateRoutes = "/table";
+  if (to.path.includes(privateRoutes)) {
+    if (await store.getters.isAuthenticate) {
+      next();
+    } else {
+      store.commit("changeOpenLogin", true);
+      localStorage.setItem("nextPath", to?.path);
+    }
+  } else {
+    next();
+  }
+});
 export default router;

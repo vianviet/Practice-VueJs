@@ -10,7 +10,6 @@ import VueSocketIO from "vue-socket.io";
 
 Vue.config.productionTip = false;
 
-// console.log(VueSocketIO);
 Vue.use(
   new VueSocketIO({
     connection: "http://localhost:3000",

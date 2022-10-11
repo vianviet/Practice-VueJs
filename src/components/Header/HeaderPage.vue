@@ -1,5 +1,9 @@
 <template>
   <v-row no-gutters>
+    <audio controls ref="audioe" class="d-none">
+      <source src="../../../public/sounds/test.mp3" type="audio/mpeg" />
+      Your browser does not support the audio tag.
+    </audio>
     <div class="header">
       <v-col
         lg="4"
@@ -27,23 +31,34 @@
         class="header__right header__row"
         :class="$vuetify.breakpoint.name === 'xs' && 'd-none'"
       >
-        <v-badge color="#49A342" bordered bottom dot overlap>
+        <!-- <menus-component> -->
+        <v-badge color="#49A342" bordered bottom dot overlap v-if="isAuth">
           <img
             :style="{
               width: '40px!important',
               height: '40px!important',
               borderRadius: '50%',
             }"
-            src="https://technext.github.io/elaadmin/images/admin.jpg"
+            :src="$store.state.avatar"
           />
         </v-badge>
+        <!-- </menus-component> -->
+        <login-dialog v-if="!isAuth" />
+        <!-- <menus-component> -->
         <v-badge :content="message" color="#007BFF" bordered overlap>
           <v-icon color="rgb(153,171,180)">mdi-email</v-icon>
         </v-badge>
+        <!-- </menus-component> -->
+        <!-- <menus-component> -->
         <v-badge :content="notification" color="#DC3545" bordered overlap>
           <v-icon color="rgb(153,171,180)">mdi-bell</v-icon>
         </v-badge>
-        <v-icon color="rgb(153,171,180)">mdi-magnify</v-icon>
+        <!-- </menus-component> -->
+        <v-icon
+          color="rgb(153,171,180)"
+          @click="$store.commit('changeOpenSearch', true)"
+          >mdi-magnify</v-icon
+        >
       </v-col>
     </div>
     <v-col
@@ -63,7 +78,7 @@
             height: '40px!important',
             borderRadius: '50%',
           }"
-          src="https://technext.github.io/elaadmin/images/admin.jpg"
+          :src="$store.state.avatar"
         />
       </v-badge>
       <v-badge :content="message" color="#007BFF" bordered overlap>
@@ -77,14 +92,21 @@
   </v-row>
 </template>
 
-<script lang="ts">
+<script>
+import LoginDialog from "./LoginDialog.vue";
+import jwt_decode from "jwt-decode";
+// import MenusComponent from "../common/MenusComponent.vue";
 export default {
   name: "HeaderPage",
+  components: {
+    LoginDialog,
+    // MenusComponent,
+  },
   props: ["drawer"],
   data() {
     return {
-      notification: 1,
-      message: 1,
+      notification: 3,
+      message: 4,
     };
   },
   methods: {
@@ -93,22 +115,27 @@ export default {
       // this.$emit("eventChangeDrawer");
     },
   },
+  computed: {
+    isAuth() {
+      const result = this.$store.getters.isAuthenticate;
+      return result;
+    },
+  },
   created() {
-    setTimeout(() => {
-      this.notification++;
-      setTimeout(() => {
-        this.notification++;
-      }, 500);
-    }, 500);
-    setTimeout(() => {
-      this.message++;
-      setTimeout(() => {
-        this.message++;
-        setTimeout(() => {
-          this.message++;
-        }, 500);
-      }, 500);
-    }, 300);
+    if (localStorage.getItem("token")) {
+      this.$store.commit(
+        "changeEmail",
+        jwt_decode(localStorage.getItem("token")).email
+      );
+      this.$store.commit(
+        "changeRole",
+        jwt_decode(localStorage.getItem("token")).role
+      );
+      this.$store.commit(
+        "changeAvatar",
+        jwt_decode(localStorage.getItem("token")).avatar
+      );
+    }
   },
 };
 </script>
@@ -145,6 +172,10 @@ export default {
   }
   img {
     max-width: 145px;
+  }
+  i,
+  span {
+    cursor: pointer;
   }
 }
 .row {

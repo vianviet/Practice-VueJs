@@ -40,10 +40,5 @@ export default {
       isActive: false,
     };
   },
-  watch: {
-    isActive() {
-      console.log("hahaha");
-    },
-  },
 };
 </script>
